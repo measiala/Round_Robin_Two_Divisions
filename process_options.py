@@ -14,7 +14,7 @@ def process_options():
                       help='Number of divisions')
     ARGP.add_argument('START_DATE', metavar='START_DATE', type=str,
                       help='First week of season')
-    ARGP.add_argument('SKIP_DATES', metavar='SKIP_DATES', type=list,
+    ARGP.add_argument('SKIP_DATES', metavar='SKIP_DATES', type=str,
                       help='List of dates to skip, e.g., holidays')
     ARGP.add_argument('--teamfile','-i',metavar='Team_Info_File', type=str,
                       help='CSV Input File containing Team Information')
@@ -39,10 +39,31 @@ def process_options():
 
     return _args
 
+def create_round_date(start, nround, omit = ''):
+    """Create list of dates for every 7 days skipping omit dates"""
+    from datetime import datetime, timedelta
+    start_dt = datetime.strptime(start,"%Y/%m/%d")
+
+    round_date = []
+    for round in range(nround):
+        flag = 0
+        if round == 0:
+            rnd_dt = start_dt
+        else:
+            rnd_dt = rnd_dt + timedelta(days=7)
+        while flag == 0:
+            round_dt = rnd_dt.strftime("%Y/%m/%d")
+            if round_dt not in omit:
+                flag = 1
+            else:
+                flag = 0
+                rnd_dt = rnd_dt + timedelta(days=7)
+        round_date.append(round_dt)
+    return round_date
+
 def create_play_dates(START_DATE, ndteams, SKIP_DATES=[]):
     """Create list of play dates for 1st Half, 2nd Half, Cross Division"""
     import logging
-    from create_schedule import create_round_date
 
     pd = create_round_date(START_DATE, 2*(ndteams - 1) + ndteams, 
                            SKIP_DATES)

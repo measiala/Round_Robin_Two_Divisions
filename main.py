@@ -9,7 +9,7 @@ from create_schedule import round_robin, cross_div, combine_schedules
 from class_defs import Schedule, League
 from process_options import process_options, create_play_dates
 from import_teams import import_teams
-from print_schedule import print_schedule, print_league
+from print_schedule import print_schedule, print_league, print_team_schedule
 
 # Process command line options
 ARGS = process_options()
@@ -22,7 +22,7 @@ for divn in range(ARGS.NDIVS):
     IHPL.add_div('Division #' + str(divn + 1))
 
 # Read in League Info
-ihpl_teams = import_teams(IHPL, ARGS.NDTEAMS, ARGS.teamfile)
+[ihpl_teams, ihpl_capts] = import_teams(IHPL, ARGS.NDTEAMS, ARGS.teamfile)
 
 # Define play dates
 [PLAY_DATES_H1, PLAY_DATES_H2, PLAY_DATES_XD] \
@@ -56,3 +56,4 @@ combine_schedules(FULL_SCH, D1H1, D2H1, XD12, D1H2, D2H2)
 
 print_league(IHPL, ihpl_teams)
 print_schedule(FULL_SCH, ihpl_teams)
+print_team_schedule(FULL_SCH, 'Lisas #2', ihpl_teams, ihpl_capts)

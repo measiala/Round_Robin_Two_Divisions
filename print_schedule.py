@@ -50,36 +50,41 @@ def print_league(leag, leag_list, outfile='print'):
                 line = line + '{:<32}'.format('')
         pline(line)
         line = ''
-"""
-def print_team_schedule( team, rounds, dates, games, home_team, away_team):
-    num_rnds = rounds[-1] + 1
-    num_games = games[-1] + 1
 
-    print("\nTeam: " + team + "\n")
-    team_idx = team_names.index(team)
-    for round in range(num_rnds):
-        rdate = dates[round]
-        line = '{}'.format(rdate)
-        hteam = home_team[round*num_games:(round+1)*num_games]
-        ateam = away_team[round*num_games:(round+1)*num_games]
-        try:
-            hidx = hteam.index(team_idx)
-            #print(hidx)
-        except ValueError:
-            try:
-                aidx = ateam.index(team_idx)
-                #print(aidx)
-            except ValueError:
-                print("ERROR")
+def print_team_schedule(sch, team, team_list, capt_list, outfile='print'):
+    import logging
+    """Print individual team schedule"""
+    if outfile == 'print':
+        def pline(txt):
+            print(txt)
+    else:
+        def pline(txt):
+            outfile.write(txt + '\n')
+    line = ''
+
+    pline("\nTeam: " + team + "\n")
+    for rnd in range(sch.nrounds):
+        _rnd = sch.rounds[rnd]
+        line = '{}'.format(_rnd.play_date)
+        game_not_found = True
+        match = 0
+        while game_not_found and match < _rnd.nmatches:
+            _match = _rnd.matches[match]
+            if _match.home == team:
+                _teamidx = team_list.index(_match.away)
+                _capt = capt_list[_teamidx]
+                line = line + " <-- Home versus {} ({})".format(_match.away,_capt)
+                game_not_found = False
+            elif _match.away == team:
+                _teamidx = team_list.index(_match.home)
+                _capt = capt_list[_teamidx]
+                line = line + " --> Away at {} ({})".format(_match.home,_capt)
+                game_not_found = False
             else:
-                #print("away path",home_team[aidx])
-                line = line+ "  " + "At {} versus {} ({})"\
-                .format(team_loc[hteam[aidx]],team_names[hteam[aidx]],\
-                            capt_names[hteam[aidx]])
-        else:
-            #print("home path")
-            line = line + "  " + "Home versus {} ({})"\
-                .format(team_names[ateam[hidx]],capt_names[ateam[hidx]])
+                match = match + 1
+        if game_not_found == True:
+            logging.warning("Bye week is not expected.")
+            line = line + "Bye Week"
+        pline(line)
+               
 
-        print(line)
-"""

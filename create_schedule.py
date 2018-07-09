@@ -1,28 +1,6 @@
 """
 Functions to create various schedule types
 """
-def create_round_date(start, nround, omit = ''):
-    """Create list of dates for every 7 days skipping omit dates"""
-    from datetime import datetime, timedelta
-    start_dt = datetime.strptime(start,"%Y/%m/%d")
-
-    round_date = []
-    for round in range(nround):
-        flag = 0
-        if round == 0:
-            rnd_dt = start_dt
-        else:
-            rnd_dt = rnd_dt + timedelta(days=7)
-        while flag == 0:
-            round_dt = rnd_dt.strftime("%Y/%m/%d")
-            if round_dt not in omit:
-                flag = 1
-            else:
-                flag = 0
-                rnd_dt = rnd_dt + timedelta(days=7)
-        round_date.append(round_dt)
-    return round_date
-
 def round_robin(sch, div, play_dates, swap_loc_flag):
     """Create single round robin schedule for one division for one match per pair"""
     from funcs import zmod, mod

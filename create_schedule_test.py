@@ -2,18 +2,10 @@
 Test create_schedule.py
 """
 
-from create_schedule import create_round_date, round_robin, \
-                            cross_div, combine_schedules
+from create_schedule import round_robin, cross_div, combine_schedules
+from process_options import create_round_date
 from class_defs import Schedule, Division
 from funcs import comb
-
-def test_create_round_date():
-    """Test creating dates"""
-    assert create_round_date('09/02/18', 1) == ['09/02/18']
-    assert create_round_date('09/02/18', 2) == ['09/02/18', '09/09/18']
-    assert create_round_date('09/02/18', 1, '09/02/18') == ['09/09/18']
-    assert create_round_date('09/02/18', 2, '09/09/18') \
-            == ['09/02/18', '09/16/18']
 
 def test_round_robin():
     """Test round robin schedule"""
