@@ -2,6 +2,7 @@
 Functions to create various schedule types
 """
 from class_defs import Division, Schedule
+
 from funcs import zmod, mod
 
 

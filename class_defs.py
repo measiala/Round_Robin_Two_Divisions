@@ -6,24 +6,6 @@ import typing
 
 
 @dataclasses.dataclass
-class Location:
-    """Define pool location"""
-
-    name: str
-    bar: str
-    table_id: str = None
-
-
-@dataclasses.dataclass
-class Team:
-    """Define Team related information"""
-
-    name: str
-    captain: str
-    location: Location
-
-
-@dataclasses.dataclass
 class Match:
     """Define a match by a home and away Team"""
 
