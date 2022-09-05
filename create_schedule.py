@@ -1,9 +1,13 @@
 """
 Functions to create various schedule types
 """
-def round_robin(sch, div, play_dates, swap_loc_flag):
+from class_defs import Division, Schedule
+from funcs import zmod, mod
+
+
+def round_robin(sch: Schedule, div: Division, play_dates, swap_loc_flag) -> None:
     """Create single round robin schedule for one division for one match per pair"""
-    from funcs import zmod, mod
+
     nteams = div.nteams
     nrnds = nteams - 1
 
@@ -40,10 +44,17 @@ def round_robin(sch, div, play_dates, swap_loc_flag):
                     sch.rounds[rnd].add_match(home_flag, team1, team2)
     return None
 
-def cross_div(sch, div1, div2, play_dates):
-    """Create interdivisional schedule using a simple algorithm"""
-    from funcs import zmod
 
+def cross_div(
+    name: str,
+    div1: Division,
+    div2: Division,
+    play_dates: list[str],
+    bye_teams: bool = False,
+) -> Schedule:
+    """Create interdivisional schedule using a simple algorithm"""
+
+    sch = Schedule(name)
     if div1.nteams == div2.nteams:
         nteams = div1.nteams
         nrnds = nteams
@@ -59,11 +70,16 @@ def cross_div(sch, div1, div2, play_dates):
                 elif zmod(rnd, 2) == 1:
                     home_flag = 2
                 sch.rounds[rnd].add_match(home_flag, team1, team2)
-        return True
-    print('Interdivisional schedule creator requires two equal-sized divisions')
-    return False
+        if bye_teams:
+            sch.swap_rounds(nrnds - 1, nrnds - 3)
+            sch.swap_rounds(nrnds - 2, nrnds - 4)
+        return sch
+    raise ValueError(
+        "Interdivisional schedule creator requires two equal-sized divisions"
+    )
 
-def combine_schedules(sch, *args):
+
+def combine_schedules(sch: Schedule, *args: Schedule):
     """Combine indeterminate number of schedules"""
     if len(args) == 1:
         sch = args[0]
@@ -81,8 +97,9 @@ def combine_schedules(sch, *args):
         _nrounds = len(_play_dates)
         for _rnd in range(_nrounds):
             sch.add_round(_rnd, _play_dates[_rnd])
-            for _i in range(len(args)):
-                _subsch = args[_i]
+            for _i, _subsch in enumerate(args):
+                # for _i in range(len(args)):
+                #    _subsch = args[_i]
                 if _play_dates[_rnd] in _sch_pd_list[_i]:
                     _subrnd = _subsch.round_lkup[_play_dates[_rnd]]
                     for _match in range(_subsch.rounds[_subrnd].nmatches):
